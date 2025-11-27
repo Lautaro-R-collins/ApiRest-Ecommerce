@@ -5,7 +5,7 @@ import { registerUser } from "../controllers/authControllers.js";
 const router = express.Router();
 
 
-
+router.post('/register', registerUser);
 
 router.post('/login', ( req, res) => {
     console.log('login Hiciste una peticion POST a /login')
