@@ -1,13 +1,14 @@
 import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 import userModel from '../models/userModel.js'
 import { registerSchema } from '../schemas/authSchema.js'
 
 export const registerUser = async (req, res) => {
     try {
-        // extrar los datos y validar
+        // extraer datos y validar
         const { email, password, username } = registerSchema.parse(req.body)
 
-        // comprobar si el usuario existe
+        // comprobar si existe
         const existingUser = await userModel.findOne({ email })
         if (existingUser) {
             return res.status(400).json({ error: 'El usuario ya existe' })
@@ -19,7 +20,7 @@ export const registerUser = async (req, res) => {
         // comprobar admin
         const isAdminUser = email === process.env.ADMIN_EMAIL
 
-        // guardar usuario en BD
+        // crear usuario
         const newUser = new userModel({
             username,
             email,
@@ -29,17 +30,34 @@ export const registerUser = async (req, res) => {
 
         await newUser.save()
 
-        // respuesta final
-        res.json({
+        // generar token JTW
+        const token = jwt.sign(
+            { userId: newUser._id, isAdmin: newUser.isAdmin },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        )
+
+        // enviar cookie segura
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 3600000,
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        })
+
+        // enviar respuesta final
+        return res.status(201).json({
             message: 'Usuario registrado exitosamente',
+            token,
             user: {
                 id: newUser._id,
                 username: newUser.username,
                 email: newUser.email,
+                isAdmin: newUser.isAdmin,
             },
         })
     } catch (error) {
         console.error(error)
-        res.status(400).json({ error: error.errors || 'Error en el servidor' })
+        return res.status(500).json({ error: 'Error interno del servidor' })
     }
 }
