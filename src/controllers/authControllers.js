@@ -61,3 +61,38 @@ export const registerUser = async (req, res) => {
         return res.status(500).json({ error: 'Error interno del servidor' })
     }
 }
+
+export const profile = async (req, res) => {
+    try {
+        // Leer cookie
+        const token = req.cookies.token;
+        console.log("cookie:", token);
+
+        if (!token) {
+            return res.status(401).json({ error: "No hay token, usuario no autenticado" });
+        }
+
+        // Verificar token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log("datos decodificados:", decoded);
+
+        // Buscar usuario en DB
+        const user = await userModel.findById(decoded.userId);
+        if (!user) {
+            return res.status(404).json({ error: "Usuario no encontrado" });
+        }
+
+        console.log("Usuario encontrado con éxito y enviando datos al front");
+
+        return res.status(200).json({
+            id: user._id,
+            username: user.username,
+            email: user.email,
+            isAdmin: user.isAdmin,
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(401).json({ error: "Token inválido o expirado" });
+    }
+};
