@@ -1,8 +1,10 @@
 import express from 'express'
 import { config } from 'dotenv'
 import { connectDB, disconnectDB } from './config/configDB.js'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
-//import routes
+// import routes
 import authRoutes from './routes/authRoutes.js'
 
 config()
@@ -10,8 +12,20 @@ config()
 const app = express()
 const PORT = process.env.PORT || 3000
 
-// Rutas Api
+// Middleware CORS
+app.use(
+    cors({
+        origin: process.env.CLIENT_URL || 'http://localhost:5173',
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        credentials: true,
+    })
+)
 
+app.use(cookieParser())
+app.use(express.json())
+
+// Rutas Api
 app.use('/api/auth', authRoutes)
 
 connectDB()
@@ -23,5 +37,3 @@ connectDB()
     .catch(() => {
         disconnectDB()
     })
-
-    
