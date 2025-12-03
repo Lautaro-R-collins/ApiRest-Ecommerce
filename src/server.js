@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser'
 
 // import routes
 import authRoutes from './routes/authRoutes.js'
+import productsRoutes from './routes/productsRoutes.js'
 
 config()
 
@@ -27,6 +28,9 @@ app.use(express.json())
 
 // Rutas Api
 app.use('/api/auth', authRoutes)
+app.use('/api/products', productsRoutes)
+
+// Conexión a la BD
 
 connectDB()
     .then(() => {
