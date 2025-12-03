@@ -1,0 +1,82 @@
+import Product from '../models/productModel.js'
+import { productSchema } from '../schemas/productSchema.js'
+
+export const createProduct = async (req, res) => {
+    try {
+        const {
+            name,
+            description,
+            price,
+            brand,
+            images,
+            category,
+            subcategory,
+            subsubcategory,
+            stock,
+            isActive,
+            discount,
+            discountActive,
+        } = productSchema.parse(req.body)
+
+        const newProduct = new Product({
+            name,
+            description,
+            price,
+            brand,
+            images,
+            category,
+            subcategory,
+            subsubcategory,
+            stock,
+            isActive,
+            discount,
+            discountActive,
+        })
+
+        const savedProduct = await newProduct.save()
+
+        return res.status(201).json({
+            message: 'Producto creado exitosamente',
+            product: savedProduct,
+        })
+    } catch (error) {
+        console.error('Error al crear producto:', error)
+        return res.status(500).json({
+            message: 'Error interno del servidor',
+        })
+    }
+}
+
+export const updateProduct = async (req, res) => {
+    try {
+        // Validar datos parciales
+        const validatedData = productSchema.partial().parse(req.body)
+        // Obtener el id
+        const { id } = req.params
+        // Actualizar en DB
+        const updatedProduct = await Product.findByIdAndUpdate(
+            id,
+            validatedData,
+            { new: true }
+        )
+
+        if (!updatedProduct) {
+            return res.status(404).json({ message: 'Producto no encontrado' })
+        }
+
+        return res.json({
+            message: 'Producto actualizado correctamente',
+            product: updatedProduct,
+        })
+    } catch (error) {
+        console.error('Error actualizando producto:', error)
+        if (error?.issues) {
+            return res.status(400).json({
+                message: 'Error de validación',
+                errors: error.issues,
+            })
+        }
+
+        return res.status(500).json({ message: 'Error interno del servidor' })
+    }
+}
