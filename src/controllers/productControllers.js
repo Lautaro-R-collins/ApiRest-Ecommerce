@@ -80,3 +80,41 @@ export const updateProduct = async (req, res) => {
         return res.status(500).json({ message: 'Error interno del servidor' })
     }
 }
+
+export const getProductsById = async (req, res) => {
+    try {
+        const { id } = req.params
+        const product = await Product.findById(id)
+        if (!product) {
+            return res.status(404).json({ message: 'Producto no encontrado' })
+        }
+        return res.json(product)
+    } catch (error) {
+        console.error('Error obteniendo producto:', error)
+        return res.status(500).json({ message: 'Error interno del servidor' })
+    }
+}
+
+export const getAllProducts = async (req, res) => {
+    try {
+        const products = await Product.find()
+        return res.json(products)
+    } catch (error) {
+        console.error('Error obteniendo productos:', error)
+        return res.status(500).json({ message: 'Error interno del servidor' })
+    }
+}
+
+export const deleteProduct = async (req, res) => {
+    try {
+        const { id } = req.params
+        const deletedProduct = await Product.findByIdAndDelete(id)
+        if (!deletedProduct) {
+            return res.status(404).json({ message: 'Producto no encontrado' })
+        }
+        return res.json({ message: 'Producto eliminado correctamente' })
+    } catch (error) {
+        console.error('Error eliminando producto:', error)
+        return res.status(500).json({ message: 'Error interno del servidor' })
+    }
+}
