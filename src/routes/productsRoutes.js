@@ -4,7 +4,8 @@ import {
     updateProduct,
     getProductsById,
     getAllProducts,
-    deleteProduct
+    deleteProduct,
+    searchProducts,
 } from '../controllers/productControllers.js'
 
 const router = express.Router()
@@ -13,10 +14,8 @@ const router = express.Router()
 // RUTAS PÚBLICAS
 // ===============
 
-// Obtener todos los productos, con filtros por categoría
+router.get('/search', searchProducts)
 router.get('/', getAllProducts)
-
-// Obtener un producto por ID
 router.get('/:id', getProductsById)
 
 // ============================
