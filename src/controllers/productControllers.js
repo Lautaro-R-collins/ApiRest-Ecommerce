@@ -97,7 +97,20 @@ export const getProductsById = async (req, res) => {
 
 export const getAllProducts = async (req, res) => {
     try {
-        const products = await Product.find()
+        let { category, subcategory } = req.query
+
+        // Normalizamos a minúsculas 
+        if (category) category = category.toLowerCase()
+        if (subcategory) subcategory = subcategory.toLowerCase()
+
+        const filter = {}
+
+        if (category)
+            filter.category = { $regex: new RegExp(`^${category}$`, 'i') }
+        if (subcategory)
+            filter.subcategory = { $regex: new RegExp(`^${subcategory}$`, 'i') }
+
+        const products = await Product.find(filter)
         return res.json(products)
     } catch (error) {
         console.error('Error obteniendo productos:', error)
