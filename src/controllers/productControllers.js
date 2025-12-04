@@ -49,7 +49,7 @@ export const createProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
     try {
-        // Validar datos parciales
+        // Validar datos
         const validatedData = productSchema.partial().parse(req.body)
         // Obtener el id
         const { id } = req.params
@@ -98,8 +98,6 @@ export const getProductsById = async (req, res) => {
 export const getAllProducts = async (req, res) => {
     try {
         let { category, subcategory } = req.query
-
-        // Normalizamos a minúsculas 
         if (category) category = category.toLowerCase()
         if (subcategory) subcategory = subcategory.toLowerCase()
 
@@ -129,5 +127,33 @@ export const deleteProduct = async (req, res) => {
     } catch (error) {
         console.error('Error eliminando producto:', error)
         return res.status(500).json({ message: 'Error interno del servidor' })
+    }
+}
+
+// Buscar productos
+export const searchProducts = async (req, res) => {
+    const { query } = req.query
+
+    if (!query || query.trim() === '') {
+        return res.json([])
+    }
+
+    try {
+        const regex = new RegExp(query, 'i')
+
+        const results = await Product.find({
+            $or: [
+                { name: regex },
+                { description: regex },
+                { category: regex },
+                { subcategory: regex },
+                { brand: regex },
+            ],
+        })
+
+        res.json(results)
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: 'Error en el servidor' })
     }
 }
