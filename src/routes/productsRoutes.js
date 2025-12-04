@@ -1,29 +1,30 @@
-import express from "express";
-import { createProduct, updateProduct } from "../controllers/productControllers.js"
+import express from 'express'
+import {
+    createProduct,
+    updateProduct,
+    getProductsById,
+    getAllProducts,
+    deleteProduct
+} from '../controllers/productControllers.js'
 
-
-const router = express.Router();
+const router = express.Router()
 
 // ===============
 // RUTAS PÚBLICAS
 // ===============
 
 // Obtener todos los productos, con filtros por categoría
-router.get("/", async (req, res) => {
-    res.json({ message: "Lista de productos" });
-});
+router.get('/', getAllProducts)
 
 // Obtener un producto por ID
-router.get("/:id", async (req, res) => {
-    res.json({ message: "productor obtenido" });
-});
+router.get('/:id', getProductsById)
 
 // ============================
-// RUTAS PRIVADAS (solo admin)          
+// RUTAS PRIVADAS (solo admin)
 // ============================
 
-router.post("/", createProduct);
-router.put("/:id", updateProduct);
-router.delete("/:id", async (req, res) => {});
+router.post('/', createProduct)
+router.put('/:id', updateProduct)
+router.delete('/:id', deleteProduct)
 
-export default router;
+export default router
