@@ -4,9 +4,11 @@ import { connectDB, disconnectDB } from './config/configDB.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 
+
 // import routes
 import authRoutes from './routes/authRoutes.js'
 import productsRoutes from './routes/productsRoutes.js'
+import orderRoutes from "./routes/orderRoutes.js";
 
 config()
 
@@ -29,6 +31,7 @@ app.use(express.json())
 // Rutas Api
 app.use('/api/auth', authRoutes)
 app.use('/api/products', productsRoutes)
+app.use("/api/orders", orderRoutes);
 
 // Conexión a la BD
 
