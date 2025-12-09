@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser'
 import authRoutes from './routes/authRoutes.js'
 import productsRoutes from './routes/productsRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
+import reviewRoutes from './routes/reviewRoutes.js';
 
 config()
 
@@ -31,6 +32,7 @@ app.use(express.json())
 app.use('/api/auth', authRoutes)
 app.use('/api/products', productsRoutes)
 app.use('/api/orders', orderRoutes)
+app.use('/api/reviews', reviewRoutes);
 
 // Conexión a la BD
 
