@@ -17,7 +17,9 @@ const OrderSchema = new mongoose.Schema({
         {
             productId: mongoose.Schema.Types.ObjectId,
             name: String,
-            price: Number,
+            originalPrice: Number,
+            finalPrice: Number,
+            discountApplied: Number,
             quantity: Number,
         },
     ],
@@ -26,6 +28,6 @@ const OrderSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
-})
+});
 
 export default mongoose.model('Order', OrderSchema)
