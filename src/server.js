@@ -3,6 +3,7 @@ import { config } from 'dotenv'
 import { connectDB, disconnectDB } from './config/configDB.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import path from 'path'
 
 // import routes
 import authRoutes from './routes/authRoutes.js'
@@ -16,6 +17,9 @@ const app = express()
 const PORT = process.env.PORT || 3000
 
 // Middleware CORS
+
+app.use('/uploads', express.static(path.resolve('uploads')))
+
 app.use(
     cors({
         origin: process.env.CLIENT_URL || 'http://localhost:5173',
