@@ -28,6 +28,11 @@ const userSchema = new mongoose.Schema({
         default: false,
         required: true,
     },
+
+    avatar: {
+        type: String,
+        default: null, 
+    },
 })
 
 export default mongoose.model('User', userSchema)
