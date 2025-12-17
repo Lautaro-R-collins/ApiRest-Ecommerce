@@ -120,20 +120,14 @@ export const loginUser = async (req, res) => {
 
 export const profile = async (req, res) => {
     try {
-        // Leer cookie
         const token = req.cookies.token
-        console.log('cookie:', token)
 
         if (!token) {
-            return res
-                .status(401)
-                .json({ error: 'No hay token, usuario no autenticado' })
+            return res.status(401).json({ error: 'No autenticado' })
         }
 
-        // Verificar token
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-        // Buscar usuario en DB
         const user = await userModel.findById(decoded.userId)
         if (!user) {
             return res.status(404).json({ error: 'Usuario no encontrado' })
@@ -144,9 +138,9 @@ export const profile = async (req, res) => {
             username: user.username,
             email: user.email,
             isAdmin: user.isAdmin,
+            avatar: user.avatar, // 👈 CLAVE
         })
     } catch (error) {
-        console.error(error)
         return res.status(401).json({ error: 'Token inválido o expirado' })
     }
 }
@@ -158,4 +152,35 @@ export const logoutUser = (req, res) => {
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     })
     res.status(200).json({ message: 'Usuario deslogueado exitosamente' })
+}
+
+export const updateAvatar = async (req, res) => {
+    try {
+        // multer pone el archivo en req.file
+        if (!req.file) {
+            return res.status(400).json({ error: 'No se envió ninguna imagen' })
+        }
+
+        const userId = req.user.userId
+
+        const avatarPath = `/uploads/avatars/${req.file.filename}`
+
+        const user = await userModel.findByIdAndUpdate(
+            userId,
+            { avatar: avatarPath },
+            { new: true }
+        )
+
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' })
+        }
+
+        return res.status(200).json({
+            message: 'Avatar actualizado correctamente',
+            avatar: avatarPath,
+        })
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ error: 'Error al actualizar avatar' })
+    }
 }
