@@ -10,7 +10,6 @@ export const authMiddleware = (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-    // 🔥 ESTO ES LO QUE TE FALTA
     req.user = {
       userId: decoded.userId,
       isAdmin: decoded.isAdmin,
