@@ -10,11 +10,13 @@ import {
 
 import { authMiddleware } from '../middlewares/authMiddleware.js'
 import { uploadAvatar } from '../middlewares/uploadAvatar.js'
+import { validateSchema } from '../middlewares/validationMiddleware.js'
+import { registerSchema, loginSchema } from '../schemas/authSchema.js'
 
 const router = express.Router()
 
-router.post('/register', registerUser)
-router.post('/login', loginUser)
+router.post('/register', validateSchema(registerSchema), registerUser)
+router.post('/login', validateSchema(loginSchema), loginUser)
 router.post('/logout', logoutUser)
 router.get('/profile', profile)
 
