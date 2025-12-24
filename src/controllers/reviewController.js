@@ -1,7 +1,6 @@
 import Review from '../models/reviewModel.js'
 import User from '../models/userModel.js'
 
-
 export const getReviewsByProduct = async (req, res) => {
     try {
         const { productId } = req.params
@@ -14,31 +13,31 @@ export const getReviewsByProduct = async (req, res) => {
 }
 
 export const createReview = async (req, res) => {
-  try {
-    const { productId } = req.params
-    const { rating, comment } = req.body
+    try {
+        const { productId } = req.params
+        const { rating, comment } = req.body
 
-    const userId = req.user.userId
+        const userId = req.user.userId
 
-    const user = await User.findById(userId).select('username')
+        const user = await User.findById(userId).select('username')
 
-    if (!user) {
-      return res.status(404).json({ error: 'Usuario no encontrado' })
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' })
+        }
+
+        const review = new Review({
+            productId,
+            userId,
+            username: user.username,
+            rating,
+            comment,
+        })
+
+        await review.save()
+
+        res.status(201).json({ message: 'Reseña publicada', review })
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: 'No se pudo crear la reseña' })
     }
-
-    const review = new Review({
-      productId,
-      userId,
-      username: user.username,
-      rating,
-      comment,
-    })
-
-    await review.save()
-
-    res.status(201).json({ message: 'Reseña publicada', review })
-  } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: 'No se pudo crear la reseña' })
-  }
 }
