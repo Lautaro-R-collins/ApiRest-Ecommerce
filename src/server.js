@@ -17,4 +17,3 @@ connectDB()
         console.error('Error al iniciar el servidor:', error)
         disconnectDB()
     })
-
