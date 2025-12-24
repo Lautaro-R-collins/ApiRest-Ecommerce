@@ -1,11 +1,11 @@
 import express from 'express'
 
 import {
-  registerUser,
-  profile,
-  loginUser,
-  logoutUser,
-  updateAvatar,
+    registerUser,
+    profile,
+    loginUser,
+    logoutUser,
+    updateAvatar,
 } from '../controllers/authControllers.js'
 
 import { authMiddleware } from '../middlewares/authMiddleware.js'
@@ -21,10 +21,10 @@ router.post('/logout', logoutUser)
 router.get('/profile', profile)
 
 router.put(
-  '/avatar',
-  authMiddleware,
-  uploadAvatar.single('avatar'),
-  updateAvatar
+    '/avatar',
+    authMiddleware,
+    uploadAvatar.single('avatar'),
+    updateAvatar
 )
 
 export default router

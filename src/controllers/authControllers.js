@@ -4,7 +4,7 @@ import userModel from '../models/userModel.js'
 import { catchAsync } from '../utils/catchAsync.js'
 
 export const registerUser = catchAsync(async (req, res) => {
-    // validation handled by middleware
+    // validacion handler middleware
     const { email, password, username } = req.body
 
     // comprobar si existe
@@ -135,7 +135,6 @@ export const logoutUser = (req, res) => {
 
 export const updateAvatar = async (req, res) => {
     try {
-        // multer pone el archivo en req.file
         if (!req.file) {
             return res.status(400).json({ error: 'No se envió ninguna imagen' })
         }
